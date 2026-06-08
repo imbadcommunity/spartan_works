@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spartan Works | Saúde e Estética</title>
+  <!-- Google Fonts: Oswald for headings, Inter for body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Graduate&family=Inter:wght@300;400;600&family=Oswald:wght@500;700;900&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <img src="/logo.png" alt="Spartan Works" class="logo-img header-logo" />
+      <nav class="nav">
+        <a href="#hero">Início</a>
+        <a href="#about">Sobre</a>
+        <a href="#modalities">Modalidades</a>
+        <a href="#pricing">Planos</a>
+        <a href="#contact">Contato</a>
+      </nav>
+      <a href="#pricing" class="btn-primary">Matricule-se</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content reveal">
+      <h1 class="hero-title">FORJE SEU <span class="accent text-glow">LEGADO</span></h1>
+      <p class="hero-subtitle">Saúde, estética e qualidade de vida alinhada à ciência.</p>
+      <div class="hero-buttons">
+        <a href="#pricing" class="btn-primary btn-large">COMEÇAR AGORA</a>
+        <a href="#about" class="btn-secondary btn-large">CONHEÇA A ACADEMIA</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <h2 class="section-title">SOBRE A <span class="accent">SPARTAN WORKS</span></h2>
+          <p>Nascemos para quebrar limites em Figueira. A Spartan Works possui equipamentos rústicos de ponta, ambiente focado e os melhores proprietários (@rickf08 e @valtinhoramos) para te guiar até o seu objetivo.</p>
+          <ul class="about-features">
+            <li><span class="accent">●</span> Ambiente climatizado e espaçoso</li>
+            <li><span class="accent">●</span> Acompanhamento integral com Rick e Waltinho</li>
+            <li><span class="accent">●</span> Aberto de Segunda a Sábado</li>
+          </ul>
+        </div>
+        <div class="about-image-wrapper reveal">
+          <div class="about-image placeholder-img"></div>
+          <div class="glass-card stat-card">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Foco no Resultado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modalities Section -->
+  <section id="modalities" class="modalities section">
+    <div class="container">
+      <h2 class="section-title text-center reveal">NOSSO <span class="accent">FOCO</span></h2>
+      <p class="section-subtitle text-center reveal">Onde o resultado acontece.</p>
+      
+      <div class="modalities-grid single-modality">
+        <div class="modality-card glass-card reveal">
+          <img src="/musculacao.png" alt="Musculação" class="feature-img" />
+          <h3>Musculação Hardcore</h3>
+          <p>Área de peso livre e máquinas articuladas de alta performance focadas em resultados reais, hipertrofia e força bruta. Ambiente preparado para quem leva o treino a sério.</p>
+        </div>
+        <div class="modality-card glass-card reveal">
+          <img src="/trainer.png" alt="Treinamento com Rick e Waltinho" class="feature-img" />
+          <h3>Acompanhamento Profissional</h3>
+          <p>Rick e Waltinho estão sempre na área para garantir que sua execução seja perfeita. Orientação técnica baseada em ciência para você extrair o máximo do seu potencial sem lesões.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="pricing section">
+    <div class="container">
+      <h2 class="section-title text-center reveal">ESCOLHA SEU <span class="accent">PLANO</span></h2>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <h3 class="plan-name">MENSAL</h3>
+          <div class="plan-price">R$ 110<span class="plan-period">/mês</span></div>
+          <a href="https://wa.me/5543900000000?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Mensal!" target="_blank" class="btn-secondary w-full">Assinar Mensal</a>
+        </div>
+        
+        <div class="pricing-card premium-card reveal">
+          <div class="popular-badge">MAIS VANTAGIOSO</div>
+          <h3 class="plan-name">ANUAL</h3>
+          <div class="plan-price">R$ 100<span class="plan-period">/mês</span></div>
+          <a href="https://wa.me/5543900000000?text=Olá,%20gostaria%20de%20saber%20mais%20sobre%20o%20plano%20Anual!" target="_blank" class="btn-primary w-full">Assinar Anual</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="reveal">
+          <h2 class="section-title">PRONTO PARA <span class="accent">COMEÇAR?</span></h2>
+          <p>Nossa equipe está pronta para tirar todas as suas dúvidas. Mande uma mensagem e agende uma aula experimental gratuita!</p>
+          <div class="contact-info">
+            <p><strong>Endereço:</strong> Avenida Castelo Branco - Figueira, PR</p>
+            <p><strong>Instagram:</strong> @spartan.works</p>
+            <p><strong>Horário:</strong> Segunda a Sábado: 07h às 22h</p>
+          </div>
+          <a href="https://wa.me/5543900000000?text=Olá,%20tenho%20interesse%20em%20treinar%20na%20Spartan%20Works!" target="_blank" class="btn-whatsapp reveal">
+            Falar no WhatsApp
+          </a>
+        </div>
+        <div class="map-placeholder glass-card reveal">
+          <p>Mapa da Localização</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container text-center">
+      <img src="/logo.png" alt="Spartan Works" class="logo-img footer-logo mb-4" />
+      <p>&copy; 2026 Spartan Works. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
