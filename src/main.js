@@ -128,15 +128,16 @@ window.addEventListener('scroll', activateNavLink, { passive: true });
 
 // --- Product Carousel ---
 const initCarousel = () => {
+  const trackContainer = document.querySelector('.carousel__track-container');
   const track = document.querySelector('.carousel__track');
   const slides = document.querySelectorAll('.carousel__slide');
   const prevBtn = document.querySelector('.carousel__btn--prev');
   const nextBtn = document.querySelector('.carousel__btn--next');
   const dotsContainer = document.querySelector('.carousel__dots');
 
-  if (!track || slides.length === 0) return;
+  if (!track || !trackContainer || slides.length === 0) return;
 
-  let currentIndex = 0;
+  let currentPage = 0;
   let slidesPerView = 3;
   let autoPlayTimer;
 
@@ -144,6 +145,16 @@ const initCarousel = () => {
     if (window.innerWidth <= 480) return 1;
     if (window.innerWidth <= 768) return 2;
     return 3;
+  };
+
+  const setSlideSizes = () => {
+    const containerWidth = trackContainer.offsetWidth;
+    const slideWidth = containerWidth / slidesPerView;
+    slides.forEach(slide => {
+      slide.style.width = `${slideWidth}px`;
+      slide.style.minWidth = `${slideWidth}px`;
+      slide.style.padding = '0 8px';
+    });
   };
 
   const getTotalPages = () => Math.ceil(slides.length / slidesPerView);
@@ -156,42 +167,35 @@ const initCarousel = () => {
       dot.classList.add('carousel__dot');
       if (i === 0) dot.classList.add('active');
       dot.setAttribute('aria-label', `Página ${i + 1}`);
-      dot.addEventListener('click', () => goToSlide(i));
+      dot.addEventListener('click', () => goToPage(i));
       dotsContainer.appendChild(dot);
     }
   };
 
   const updateDots = () => {
     const dots = document.querySelectorAll('.carousel__dot');
-    const page = Math.floor(currentIndex / slidesPerView);
     dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === page);
+      dot.classList.toggle('active', i === currentPage);
     });
   };
 
-  const goToSlide = (pageIndex) => {
-    currentIndex = pageIndex * slidesPerView;
-    const maxIndex = slides.length - slidesPerView;
-    if (currentIndex > maxIndex) currentIndex = maxIndex;
-    if (currentIndex < 0) currentIndex = 0;
+  const goToPage = (page) => {
+    const totalPages = getTotalPages();
+    if (page < 0) page = totalPages - 1;
+    if (page >= totalPages) page = 0;
+    currentPage = page;
 
-    const slideWidth = slides[0].offsetWidth + 24; // gap
-    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+    const containerWidth = trackContainer.offsetWidth;
+    const offset = currentPage * containerWidth;
+
+    // Don't go past the end
+    const maxOffset = track.scrollWidth - containerWidth;
+    track.style.transform = `translateX(-${Math.min(offset, maxOffset)}px)`;
     updateDots();
   };
 
-  const nextSlide = () => {
-    const maxIndex = slides.length - slidesPerView;
-    currentIndex += slidesPerView;
-    if (currentIndex > maxIndex) currentIndex = 0;
-    goToSlide(Math.floor(currentIndex / slidesPerView));
-  };
-
-  const prevSlide = () => {
-    currentIndex -= slidesPerView;
-    if (currentIndex < 0) currentIndex = Math.max(0, slides.length - slidesPerView);
-    goToSlide(Math.floor(currentIndex / slidesPerView));
-  };
+  const nextSlide = () => goToPage(currentPage + 1);
+  const prevSlide = () => goToPage(currentPage - 1);
 
   const startAutoPlay = () => {
     stopAutoPlay();
@@ -202,13 +206,12 @@ const initCarousel = () => {
     if (autoPlayTimer) clearInterval(autoPlayTimer);
   };
 
-  // Events
+  // Button events
   if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
   if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
 
-  // Touch/Swipe support
+  // Touch/Swipe support for mobile
   let touchStartX = 0;
-  let touchEndX = 0;
 
   track.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
@@ -216,16 +219,16 @@ const initCarousel = () => {
   }, { passive: true });
 
   track.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
+    const touchEndX = e.changedTouches[0].screenX;
     const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) {
+    if (Math.abs(diff) > 40) {
       if (diff > 0) nextSlide();
       else prevSlide();
     }
     startAutoPlay();
   }, { passive: true });
 
-  // Pause on hover
+  // Pause on hover (desktop)
   const carousel = document.querySelector('.carousel');
   if (carousel) {
     carousel.addEventListener('mouseenter', stopAutoPlay);
@@ -233,16 +236,22 @@ const initCarousel = () => {
   }
 
   // Resize handler
+  let resizeTimer;
   const handleResize = () => {
-    slidesPerView = getSlidesPerView();
-    createDots();
-    goToSlide(0);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      slidesPerView = getSlidesPerView();
+      setSlideSizes();
+      createDots();
+      goToPage(0);
+    }, 150);
   };
 
   window.addEventListener('resize', handleResize);
 
   // Init
   slidesPerView = getSlidesPerView();
+  setSlideSizes();
   createDots();
   startAutoPlay();
 };
