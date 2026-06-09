@@ -125,3 +125,127 @@ const activateNavLink = () => {
 };
 
 window.addEventListener('scroll', activateNavLink, { passive: true });
+
+// --- Product Carousel ---
+const initCarousel = () => {
+  const track = document.querySelector('.carousel__track');
+  const slides = document.querySelectorAll('.carousel__slide');
+  const prevBtn = document.querySelector('.carousel__btn--prev');
+  const nextBtn = document.querySelector('.carousel__btn--next');
+  const dotsContainer = document.querySelector('.carousel__dots');
+
+  if (!track || slides.length === 0) return;
+
+  let currentIndex = 0;
+  let slidesPerView = 3;
+  let autoPlayTimer;
+
+  const getSlidesPerView = () => {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
+  };
+
+  const getTotalPages = () => Math.ceil(slides.length / slidesPerView);
+
+  const createDots = () => {
+    dotsContainer.innerHTML = '';
+    const totalPages = getTotalPages();
+    for (let i = 0; i < totalPages; i++) {
+      const dot = document.createElement('button');
+      dot.classList.add('carousel__dot');
+      if (i === 0) dot.classList.add('active');
+      dot.setAttribute('aria-label', `Página ${i + 1}`);
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+  };
+
+  const updateDots = () => {
+    const dots = document.querySelectorAll('.carousel__dot');
+    const page = Math.floor(currentIndex / slidesPerView);
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === page);
+    });
+  };
+
+  const goToSlide = (pageIndex) => {
+    currentIndex = pageIndex * slidesPerView;
+    const maxIndex = slides.length - slidesPerView;
+    if (currentIndex > maxIndex) currentIndex = maxIndex;
+    if (currentIndex < 0) currentIndex = 0;
+
+    const slideWidth = slides[0].offsetWidth + 24; // gap
+    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+    updateDots();
+  };
+
+  const nextSlide = () => {
+    const maxIndex = slides.length - slidesPerView;
+    currentIndex += slidesPerView;
+    if (currentIndex > maxIndex) currentIndex = 0;
+    goToSlide(Math.floor(currentIndex / slidesPerView));
+  };
+
+  const prevSlide = () => {
+    currentIndex -= slidesPerView;
+    if (currentIndex < 0) currentIndex = Math.max(0, slides.length - slidesPerView);
+    goToSlide(Math.floor(currentIndex / slidesPerView));
+  };
+
+  const startAutoPlay = () => {
+    stopAutoPlay();
+    autoPlayTimer = setInterval(nextSlide, 5000);
+  };
+
+  const stopAutoPlay = () => {
+    if (autoPlayTimer) clearInterval(autoPlayTimer);
+  };
+
+  // Events
+  if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
+  if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
+
+  // Touch/Swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  track.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    stopAutoPlay();
+  }, { passive: true });
+
+  track.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+    startAutoPlay();
+  }, { passive: true });
+
+  // Pause on hover
+  const carousel = document.querySelector('.carousel');
+  if (carousel) {
+    carousel.addEventListener('mouseenter', stopAutoPlay);
+    carousel.addEventListener('mouseleave', startAutoPlay);
+  }
+
+  // Resize handler
+  const handleResize = () => {
+    slidesPerView = getSlidesPerView();
+    createDots();
+    goToSlide(0);
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  // Init
+  slidesPerView = getSlidesPerView();
+  createDots();
+  startAutoPlay();
+};
+
+document.addEventListener('DOMContentLoaded', initCarousel);
+
