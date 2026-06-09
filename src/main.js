@@ -126,135 +126,33 @@ const activateNavLink = () => {
 
 window.addEventListener('scroll', activateNavLink, { passive: true });
 
-// --- Product Carousel ---
+// --- Product Carousel (native scroll) ---
 const initCarousel = () => {
-  const trackContainer = document.querySelector('.carousel__track-container');
-  const track = document.querySelector('.carousel__track');
-  const slides = document.querySelectorAll('.carousel__slide');
+  const container = document.querySelector('.carousel__track-container');
   const prevBtn = document.querySelector('.carousel__btn--prev');
   const nextBtn = document.querySelector('.carousel__btn--next');
-  const dotsContainer = document.querySelector('.carousel__dots');
 
-  if (!track || !trackContainer || slides.length === 0) return;
+  if (!container) return;
 
-  let currentPage = 0;
-  let slidesPerView = 3;
-  let autoPlayTimer;
-
-  const getSlidesPerView = () => {
-    if (window.innerWidth <= 480) return 1;
-    if (window.innerWidth <= 768) return 2;
-    return 3;
+  const getScrollAmount = () => {
+    const slide = container.querySelector('.carousel__slide');
+    if (!slide) return 300;
+    return slide.offsetWidth + 20; // slide width + gap
   };
 
-  const setSlideSizes = () => {
-    const containerWidth = trackContainer.offsetWidth;
-    const slideWidth = containerWidth / slidesPerView;
-    slides.forEach(slide => {
-      slide.style.width = `${slideWidth}px`;
-      slide.style.minWidth = `${slideWidth}px`;
-      slide.style.padding = '0 8px';
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      container.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
-  };
-
-  const getTotalPages = () => Math.ceil(slides.length / slidesPerView);
-
-  const createDots = () => {
-    dotsContainer.innerHTML = '';
-    const totalPages = getTotalPages();
-    for (let i = 0; i < totalPages; i++) {
-      const dot = document.createElement('button');
-      dot.classList.add('carousel__dot');
-      if (i === 0) dot.classList.add('active');
-      dot.setAttribute('aria-label', `Página ${i + 1}`);
-      dot.addEventListener('click', () => goToPage(i));
-      dotsContainer.appendChild(dot);
-    }
-  };
-
-  const updateDots = () => {
-    const dots = document.querySelectorAll('.carousel__dot');
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentPage);
-    });
-  };
-
-  const goToPage = (page) => {
-    const totalPages = getTotalPages();
-    if (page < 0) page = totalPages - 1;
-    if (page >= totalPages) page = 0;
-    currentPage = page;
-
-    const containerWidth = trackContainer.offsetWidth;
-    const offset = currentPage * containerWidth;
-
-    // Don't go past the end
-    const maxOffset = track.scrollWidth - containerWidth;
-    track.style.transform = `translateX(-${Math.min(offset, maxOffset)}px)`;
-    updateDots();
-  };
-
-  const nextSlide = () => goToPage(currentPage + 1);
-  const prevSlide = () => goToPage(currentPage - 1);
-
-  const startAutoPlay = () => {
-    stopAutoPlay();
-    autoPlayTimer = setInterval(nextSlide, 5000);
-  };
-
-  const stopAutoPlay = () => {
-    if (autoPlayTimer) clearInterval(autoPlayTimer);
-  };
-
-  // Button events
-  if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
-  if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
-
-  // Touch/Swipe support for mobile
-  let touchStartX = 0;
-
-  track.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    stopAutoPlay();
-  }, { passive: true });
-
-  track.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) nextSlide();
-      else prevSlide();
-    }
-    startAutoPlay();
-  }, { passive: true });
-
-  // Pause on hover (desktop)
-  const carousel = document.querySelector('.carousel');
-  if (carousel) {
-    carousel.addEventListener('mouseenter', stopAutoPlay);
-    carousel.addEventListener('mouseleave', startAutoPlay);
   }
 
-  // Resize handler
-  let resizeTimer;
-  const handleResize = () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      slidesPerView = getSlidesPerView();
-      setSlideSizes();
-      createDots();
-      goToPage(0);
-    }, 150);
-  };
-
-  window.addEventListener('resize', handleResize);
-
-  // Init
-  slidesPerView = getSlidesPerView();
-  setSlideSizes();
-  createDots();
-  startAutoPlay();
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      container.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+  }
 };
 
 document.addEventListener('DOMContentLoaded', initCarousel);
+
 

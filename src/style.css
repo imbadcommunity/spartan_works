@@ -824,26 +824,37 @@ ul {
 
 .carousel {
   position: relative;
+}
+
+.carousel__nav {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
 .carousel__track-container {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   flex: 1;
   border-radius: 8px;
 }
 
+.carousel__track-container::-webkit-scrollbar {
+  display: none;
+}
+
 .carousel__track {
   display: flex;
-  transition: transform 0.5s var(--ease-out-expo);
+  gap: 20px;
+  padding: 4px 0;
 }
 
 .carousel__slide {
-  flex-shrink: 0;
-  padding: 0 12px;
-  box-sizing: border-box;
+  flex: 0 0 calc(33.333% - 14px);
+  scroll-snap-align: start;
 }
 
 .carousel__btn {
@@ -859,6 +870,7 @@ ul {
   cursor: pointer;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  z-index: 2;
 }
 
 .carousel__btn:hover {
@@ -1258,6 +1270,10 @@ ul {
     height: 36px;
   }
 
+  .carousel__slide {
+    flex: 0 0 calc(50% - 10px);
+  }
+
   .product-card__image {
     height: 180px;
   }
@@ -1288,6 +1304,15 @@ ul {
 
   .carousel__btn {
     display: none;
+  }
+
+  .carousel__slide {
+    flex: 0 0 85%;
+  }
+
+  .carousel__track {
+    gap: 12px;
+    padding: 4px 4px 4px 0;
   }
 
   .product-card__image {
